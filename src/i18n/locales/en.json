@@ -1,0 +1,30 @@
+{
+  "app": { "title": "Admin Console" },
+  "nav": { "users": "Users", "auditLog": "Audit log" },
+  "role": { "label": "Role" },
+  "theme": { "light": "Light", "dark": "Dark", "toggle": "Toggle theme" },
+  "common": { "loading": "Loading", "error": "Something went wrong." },
+  "forbidden": "You do not have permission to view this page.",
+  "users": {
+    "title": "Users",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "actions": "Actions",
+    "add": "Add user",
+    "edit": "Edit",
+    "delete": "Delete",
+    "save": "Save",
+    "cancel": "Cancel",
+    "empty": "No users yet."
+  },
+  "auditLog": {
+    "title": "Audit log",
+    "actor": "Actor",
+    "action": "Action",
+    "target": "Target",
+    "time": "Time",
+    "filter": "Filter by action",
+    "empty": "No entries."
+  }
+}

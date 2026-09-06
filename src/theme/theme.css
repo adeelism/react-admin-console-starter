@@ -1,0 +1,114 @@
+:root {
+  --color-bg: #ffffff;
+  --color-surface: #f6f7f9;
+  --color-text: #1a1d21;
+  --color-muted: #6b7280;
+  --color-border: #e2e5e9;
+  --color-primary: #2563eb;
+  --color-primary-text: #ffffff;
+  --color-danger: #dc2626;
+  --radius: 6px;
+  --space: 8px;
+}
+
+:root[data-theme='dark'] {
+  --color-bg: #0f1419;
+  --color-surface: #171c22;
+  --color-text: #e6e9ee;
+  --color-muted: #9aa4b2;
+  --color-border: #2a313a;
+  --color-primary: #3b82f6;
+  --color-primary-text: #ffffff;
+  --color-danger: #ef4444;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--space) * 2);
+  padding: var(--space) calc(var(--space) * 2);
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.app-header nav {
+  display: flex;
+  gap: var(--space);
+}
+
+.app-header__controls {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space);
+}
+
+.app-main {
+  padding: calc(var(--space) * 2);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: var(--space);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.btn {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 6px 12px;
+  cursor: pointer;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.btn--primary {
+  background: var(--color-primary);
+  color: var(--color-primary-text);
+  border-color: var(--color-primary);
+}
+
+.btn--danger {
+  color: var(--color-danger);
+}
+
+.btn--ghost {
+  background: transparent;
+}
+
+.input,
+select {
+  padding: 6px 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--space);
+}
+
+.muted {
+  color: var(--color-muted);
+}

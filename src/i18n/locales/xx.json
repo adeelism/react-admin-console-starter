@@ -1,0 +1,4 @@
+{
+  "app": { "title": "Admin Console (xx)" },
+  "nav": { "users": "Users (xx)", "auditLog": "Audit log (xx)" }
+}
