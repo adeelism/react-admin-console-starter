@@ -13,7 +13,6 @@ describe('UsersPage', () => {
     renderWithProviders(<UsersPage />);
     expect(await screen.findByText('Ada Okafor')).toBeInTheDocument();
     expect(screen.getByText('Grace Thompson')).toBeInTheDocument();
-    // Ivan Petrov falls on page 2 with the default page size.
     expect(screen.queryByText('Ivan Petrov')).not.toBeInTheDocument();
   });
 
@@ -50,35 +49,43 @@ describe('UsersPage', () => {
     expect(await screen.findByText('Ada Okafor')).toBeInTheDocument();
   });
 
-  it('bulk-selects and deletes rows', async () => {
+  it('creates a user through the modal and toasts on success', async () => {
     renderWithProviders(<UsersPage />);
     await screen.findByText('Ada Okafor');
-    await userEvent.type(screen.getByLabelText('Search'), 'ada');
-    const row = (await screen.findByText('Ada Okafor')).closest('tr') as HTMLElement;
-    await userEvent.click(within(row).getByRole('checkbox'));
-    await userEvent.click(screen.getByRole('button', { name: 'Delete selected' }));
-    await waitFor(() => expect(screen.queryByText('Ada Okafor')).not.toBeInTheDocument());
-  });
-
-  it('hides selection, the form, and row actions for a viewer', async () => {
-    renderWithProviders(<UsersPage />, { user: viewer });
-    await screen.findByText('Ada Okafor');
-    expect(screen.queryByRole('form')).not.toBeInTheDocument();
-    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
-  });
-
-  it('creates a user as an admin', async () => {
-    renderWithProviders(<UsersPage />);
-    await screen.findByText('Ada Okafor');
+    await userEvent.click(screen.getByRole('button', { name: 'Add user' }));
     await userEvent.type(screen.getByLabelText('Name'), 'New Person');
     await userEvent.type(screen.getByLabelText('Email'), 'new@example.com');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
-    await userEvent.type(screen.getByLabelText('Search'), 'New Person');
-    expect(await screen.findByText('New Person')).toBeInTheDocument();
+    expect(await screen.findByText('User created')).toBeInTheDocument();
   });
 
-  it('edits an existing user as an admin', async () => {
+  it('validates the form and disables submit until valid', async () => {
+    renderWithProviders(<UsersPage />);
+    await screen.findByText('Ada Okafor');
+    await userEvent.click(screen.getByRole('button', { name: 'Add user' }));
+    const save = screen.getByRole('button', { name: 'Save' });
+    expect(save).toBeDisabled();
+    await userEvent.type(screen.getByLabelText('Name'), 'X');
+    await userEvent.type(screen.getByLabelText('Email'), 'bad');
+    expect(await screen.findByText('Enter a valid email address')).toBeInTheDocument();
+    expect(save).toBeDisabled();
+    await userEvent.clear(screen.getByLabelText('Email'));
+    await userEvent.type(screen.getByLabelText('Email'), 'good@example.com');
+    await waitFor(() => expect(save).toBeEnabled());
+  });
+
+  it('toasts an error when creation fails', async () => {
+    server.use(mswHttp.post('*/api/users', () => new HttpResponse(null, { status: 500 })));
+    renderWithProviders(<UsersPage />);
+    await screen.findByText('Ada Okafor');
+    await userEvent.click(screen.getByRole('button', { name: 'Add user' }));
+    await userEvent.type(screen.getByLabelText('Name'), 'New Person');
+    await userEvent.type(screen.getByLabelText('Email'), 'new@example.com');
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(await screen.findByText('Something went wrong. Please try again.')).toBeInTheDocument();
+  });
+
+  it('edits a user through the modal', async () => {
     renderWithProviders(<UsersPage />);
     await screen.findByText('Ada Okafor');
     await userEvent.type(screen.getByLabelText('Search'), 'ada');
@@ -89,6 +96,37 @@ describe('UsersPage', () => {
     await userEvent.type(nameInput, 'Ada Prime');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
     expect(await screen.findByText('Ada Prime')).toBeInTheDocument();
+  });
+
+  it('deletes a user after confirmation', async () => {
+    renderWithProviders(<UsersPage />);
+    await screen.findByText('Ada Okafor');
+    await userEvent.type(screen.getByLabelText('Search'), 'ivan');
+    const row = (await screen.findByText('Ivan Petrov')).closest('tr') as HTMLElement;
+    await userEvent.click(within(row).getByRole('button', { name: 'Delete' }));
+    const dialog = await screen.findByRole('dialog');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Delete' }));
+    await waitFor(() => expect(screen.queryByText('Ivan Petrov')).not.toBeInTheDocument());
+  });
+
+  it('bulk-deletes selected rows after confirmation', async () => {
+    renderWithProviders(<UsersPage />);
+    await screen.findByText('Ada Okafor');
+    await userEvent.type(screen.getByLabelText('Search'), 'ada');
+    const row = (await screen.findByText('Ada Okafor')).closest('tr') as HTMLElement;
+    await userEvent.click(within(row).getByRole('checkbox'));
+    await userEvent.click(screen.getByRole('button', { name: 'Delete selected' }));
+    const dialog = await screen.findByRole('dialog');
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Delete selected' }));
+    await waitFor(() => expect(screen.queryByText('Ada Okafor')).not.toBeInTheDocument());
+  });
+
+  it('hides create, selection, and row actions for a viewer', async () => {
+    renderWithProviders(<UsersPage />, { user: viewer });
+    await screen.findByText('Ada Okafor');
+    expect(screen.queryByRole('button', { name: 'Add user' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
   });
 
   it('shows an error state when the list request fails', async () => {

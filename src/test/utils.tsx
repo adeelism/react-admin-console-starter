@@ -4,6 +4,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { AuthProvider } from '../auth/AuthProvider';
 import { ThemeProvider } from '../theme/ThemeProvider';
+import { ToastProvider } from '../components/toast/ToastProvider';
 import { createQueryClient } from '../lib/queryClient';
 import type { AuthUser } from '../auth/auth-context';
 
@@ -22,7 +23,9 @@ export function renderWithProviders(ui: ReactElement, options: Options = {}) {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <AuthProvider initialUser={user}>
-            <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
+            <ToastProvider>
+              <MemoryRouter initialEntries={[route]}>{children}</MemoryRouter>
+            </ToastProvider>
           </AuthProvider>
         </ThemeProvider>
       </QueryClientProvider>

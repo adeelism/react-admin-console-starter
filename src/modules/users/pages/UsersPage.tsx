@@ -1,24 +1,28 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Plus } from '@phosphor-icons/react';
 import { useAuth } from '../../../auth/useAuth';
+import { useToast } from '../../../components/toast/useToast';
 import { PageHeader } from '../../../components/molecules/PageHeader';
 import { Spinner } from '../../../components/atoms/Spinner';
 import { EmptyState } from '../../../components/molecules/EmptyState';
 import { ErrorState } from '../../../components/molecules/ErrorState';
+import { ConfirmDialog } from '../../../components/molecules/ConfirmDialog';
 import { useCreateUser, useDeleteUser, useUpdateUser, useUsers } from '../hooks';
 import { useUsersTableParams } from '../useUsersTableParams';
 import { UsersFilters } from '../components/UsersFilters';
 import { UsersTable } from '../components/UsersTable';
 import { UsersPagination } from '../components/UsersPagination';
 import { BulkActionBar } from '../components/BulkActionBar';
-import { UserForm } from '../components/UserForm';
+import { UserFormModal } from '../components/UserFormModal';
 import type { CreateUserInput, User } from '../types';
 
-const EMPTY_FORM: CreateUserInput = { name: '', email: '', role: 'viewer' };
+type ConfirmState = { kind: 'single'; user: User } | { kind: 'bulk' } | null;
 
 export default function UsersPage() {
   const { t } = useTranslation();
   const { can } = useAuth();
+  const toast = useToast();
   const canWrite = can('users:write');
 
   const table = useUsersTableParams();
@@ -28,24 +32,49 @@ export default function UsersPage() {
   const deleteUser = useDeleteUser();
 
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [form, setForm] = useState<CreateUserInput>(EMPTY_FORM);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [confirm, setConfirm] = useState<ConfirmState>(null);
 
   const rows = useMemo(() => data?.data ?? [], [data]);
   const total = data?.total ?? 0;
 
-  const resetForm = useCallback(() => {
-    setForm(EMPTY_FORM);
-    setEditingId(null);
+  const clearSelection = useCallback(() => setSelected(new Set()), []);
+  const openCreate = useCallback(() => {
+    setEditingUser(null);
+    setFormOpen(true);
   }, []);
-  const startEdit = useCallback((user: User) => {
-    setEditingId(user.id);
-    setForm({ name: user.name, email: user.email, role: user.role });
+  const openEdit = useCallback((user: User) => {
+    setEditingUser(user);
+    setFormOpen(true);
   }, []);
-  const submitForm = useCallback(() => {
-    if (editingId) updateUser.mutate({ id: editingId, input: form }, { onSuccess: resetForm });
-    else createUser.mutate(form, { onSuccess: resetForm });
-  }, [editingId, form, updateUser, createUser, resetForm]);
+
+  const submitForm = useCallback(
+    (values: CreateUserInput) => {
+      const onError = () => toast.error(t('users.toastError'));
+      if (editingUser) {
+        updateUser.mutate(
+          { id: editingUser.id, input: values },
+          {
+            onSuccess: () => {
+              setFormOpen(false);
+              toast.success(t('users.toastUpdated'));
+            },
+            onError,
+          },
+        );
+      } else {
+        createUser.mutate(values, {
+          onSuccess: () => {
+            setFormOpen(false);
+            toast.success(t('users.toastCreated'));
+          },
+          onError,
+        });
+      }
+    },
+    [editingUser, updateUser, createUser, toast, t],
+  );
 
   const toggleSelect = useCallback((id: string) => {
     setSelected((prev) => {
@@ -63,25 +92,47 @@ export default function UsersPage() {
       return next;
     });
   }, [rows]);
-  const handleDelete = useCallback(
-    (user: User) => {
-      deleteUser.mutate(user.id);
+
+  const confirmDelete = useCallback(() => {
+    if (!confirm) return;
+    const onError = () => toast.error(t('users.toastError'));
+    if (confirm.kind === 'single') {
+      deleteUser.mutate(confirm.user.id, {
+        onSuccess: () => toast.success(t('users.toastDeleted')),
+        onError,
+      });
       setSelected((prev) => {
         const next = new Set(prev);
-        next.delete(user.id);
+        next.delete(confirm.user.id);
         return next;
       });
-    },
-    [deleteUser],
-  );
-  const bulkDelete = useCallback(() => {
-    selected.forEach((id) => deleteUser.mutate(id));
-    setSelected(new Set());
-  }, [selected, deleteUser]);
+    } else {
+      selected.forEach((id) => deleteUser.mutate(id));
+      toast.success(t('users.toastDeleted'));
+      clearSelection();
+    }
+    setConfirm(null);
+  }, [confirm, deleteUser, selected, toast, t, clearSelection]);
+
+  const pending = createUser.isPending || updateUser.isPending;
 
   return (
     <section>
-      <PageHeader title={t('users.title')} description={t('users.subtitle')} />
+      <PageHeader
+        title={t('users.title')}
+        description={t('users.subtitle')}
+        action={
+          canWrite ? (
+            <button
+              onClick={openCreate}
+              className="inline-flex items-center gap-1.5 rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-on-accent hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-accent"
+            >
+              <Plus size={16} aria-hidden />
+              {t('users.add')}
+            </button>
+          ) : undefined
+        }
+      />
       <UsersFilters
         search={table.params.search}
         role={table.params.role}
@@ -93,8 +144,8 @@ export default function UsersPage() {
       {canWrite ? (
         <BulkActionBar
           count={selected.size}
-          onDelete={bulkDelete}
-          onClear={() => setSelected(new Set())}
+          onDelete={() => setConfirm({ kind: 'bulk' })}
+          onClear={clearSelection}
         />
       ) : null}
 
@@ -133,8 +184,8 @@ export default function UsersPage() {
             onToggleSelectAll={toggleSelectAll}
             selectable={canWrite}
             canWrite={canWrite}
-            onEdit={startEdit}
-            onDelete={handleDelete}
+            onEdit={openEdit}
+            onDelete={(user) => setConfirm({ kind: 'single', user })}
           />
           <UsersPagination
             page={table.params.page}
@@ -146,15 +197,29 @@ export default function UsersPage() {
         </>
       )}
 
-      {canWrite ? (
-        <UserForm
-          form={form}
-          editing={editingId !== null}
-          onChange={setForm}
-          onSubmit={submitForm}
-          onCancel={resetForm}
-        />
-      ) : null}
+      <UserFormModal
+        open={formOpen}
+        user={editingUser}
+        pending={pending}
+        onClose={() => setFormOpen(false)}
+        onSubmit={submitForm}
+      />
+      <ConfirmDialog
+        open={confirm !== null}
+        title={
+          confirm?.kind === 'bulk' ? t('users.confirmBulkTitle') : t('users.confirmDeleteTitle')
+        }
+        message={
+          confirm?.kind === 'bulk'
+            ? t('users.confirmBulkMessage', { count: selected.size })
+            : t('users.confirmDeleteMessage', {
+                name: confirm?.kind === 'single' ? confirm.user.name : '',
+              })
+        }
+        confirmLabel={confirm?.kind === 'bulk' ? t('users.deleteSelected') : t('users.delete')}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirm(null)}
+      />
     </section>
   );
 }
