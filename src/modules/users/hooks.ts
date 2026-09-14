@@ -1,11 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { usersApi } from './api';
-import type { CreateUserInput } from './types';
+import type { CreateUserInput, UserListParams } from './types';
 
 const USERS_KEY = ['users'] as const;
 
-export function useUsers() {
-  return useQuery({ queryKey: USERS_KEY, queryFn: usersApi.list });
+export function useUsers(params: UserListParams) {
+  return useQuery({
+    // The params are part of the key so each filter/sort/page combination is cached.
+    queryKey: [...USERS_KEY, params],
+    queryFn: () => usersApi.list(params),
+  });
 }
 
 export function useCreateUser() {
