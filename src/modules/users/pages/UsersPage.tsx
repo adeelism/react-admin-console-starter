@@ -8,6 +8,7 @@ import { Spinner } from '../../../components/atoms/Spinner';
 import { EmptyState } from '../../../components/molecules/EmptyState';
 import { ErrorState } from '../../../components/molecules/ErrorState';
 import { ConfirmDialog } from '../../../components/molecules/ConfirmDialog';
+import { RolePermissionNote } from '../../../components/molecules/RolePermissionNote';
 import { useCreateUser, useDeleteUser, useUpdateUser, useUsers } from '../hooks';
 import { useUsersTableParams } from '../useUsersTableParams';
 import { UsersFilters } from '../components/UsersFilters';
@@ -133,6 +134,7 @@ export default function UsersPage() {
           ) : undefined
         }
       />
+      <RolePermissionNote />
       <UsersFilters
         search={table.params.search}
         role={table.params.role}

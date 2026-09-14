@@ -3,6 +3,7 @@ import { usersApi } from './api';
 import type { CreateUserInput, UserListParams } from './types';
 
 const USERS_KEY = ['users'] as const;
+const AUDIT_KEY = ['audit-log'] as const;
 
 export function useUsers(params: UserListParams) {
   return useQuery({
@@ -16,7 +17,11 @@ export function useCreateUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (input: CreateUserInput) => usersApi.create(input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
+    onSuccess: () => {
+      // A write changes both the users list and the audit log.
+      void queryClient.invalidateQueries({ queryKey: USERS_KEY });
+      void queryClient.invalidateQueries({ queryKey: AUDIT_KEY });
+    },
   });
 }
 
@@ -25,7 +30,11 @@ export function useUpdateUser() {
   return useMutation({
     mutationFn: ({ id, input }: { id: string; input: CreateUserInput }) =>
       usersApi.update(id, input),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
+    onSuccess: () => {
+      // A write changes both the users list and the audit log.
+      void queryClient.invalidateQueries({ queryKey: USERS_KEY });
+      void queryClient.invalidateQueries({ queryKey: AUDIT_KEY });
+    },
   });
 }
 
@@ -33,6 +42,10 @@ export function useDeleteUser() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => usersApi.remove(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: USERS_KEY }),
+    onSuccess: () => {
+      // A write changes both the users list and the audit log.
+      void queryClient.invalidateQueries({ queryKey: USERS_KEY });
+      void queryClient.invalidateQueries({ queryKey: AUDIT_KEY });
+    },
   });
 }
