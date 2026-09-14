@@ -19,7 +19,15 @@
   "language": { "label": "Language" },
   "search": { "label": "Search", "placeholder": "Search users…" },
   "theme": { "light": "Light", "dark": "Dark", "toggle": "Toggle theme" },
-  "common": { "loading": "Loading", "error": "Something went wrong.", "retry": "Try again" },
+  "common": {
+    "loading": "Loading",
+    "error": "Something went wrong.",
+    "retry": "Try again",
+    "close": "Close",
+    "cancel": "Cancel",
+    "saving": "Saving…",
+    "dismiss": "Dismiss"
+  },
   "forbidden": "You do not have permission to view this page.",
   "dashboard": {
     "title": "Dashboard",
@@ -63,7 +71,20 @@
     "clearSelection": "Clear selection",
     "noMatchTitle": "No users match your filters",
     "noMatchMessage": "Try a different search, or clear the filters to see everyone.",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "editUser": "Edit user",
+    "errors": {
+      "nameRequired": "Name is required",
+      "emailInvalid": "Enter a valid email address"
+    },
+    "confirmDeleteTitle": "Delete user",
+    "confirmDeleteMessage": "Delete {{name}}? This can't be undone.",
+    "confirmBulkTitle": "Delete users",
+    "confirmBulkMessage": "Delete {{count}} selected users? This can't be undone.",
+    "toastCreated": "User created",
+    "toastUpdated": "User updated",
+    "toastDeleted": "User deleted",
+    "toastError": "Something went wrong. Please try again."
   },
   "auditLog": {
     "title": "Audit log",
