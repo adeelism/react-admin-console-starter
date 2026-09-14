@@ -35,7 +35,8 @@
     "totalUsers": "Total users",
     "active": "Active",
     "invited": "Pending invites",
-    "suspended": "Suspended"
+    "suspended": "Suspended",
+    "recentActivity": "Recent activity"
   },
   "users": {
     "title": "Users",
@@ -54,6 +55,8 @@
     "cancel": "Cancel",
     "never": "Never",
     "empty": "No users yet.",
+    "emptyHint": "Add your first user to get started.",
+    "addFirst": "Add your first user",
     "statuses": { "active": "Active", "invited": "Invited", "suspended": "Suspended" },
     "searchPlaceholder": "Search name or email…",
     "filterRole": "Filter by role",

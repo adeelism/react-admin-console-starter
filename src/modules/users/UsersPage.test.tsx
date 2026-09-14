@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { http as mswHttp, HttpResponse } from 'msw';
+import { http as mswHttp, HttpResponse, delay } from 'msw';
 import UsersPage from './pages/UsersPage';
 import { renderWithProviders } from '../../test/utils';
 import { server } from '../../mocks/server';
@@ -128,6 +128,25 @@ describe('UsersPage', () => {
     expect(screen.queryByRole('button', { name: 'Add user' })).not.toBeInTheDocument();
     expect(screen.queryByRole('checkbox')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
+  });
+
+  it('shows a loading skeleton before data arrives', async () => {
+    server.use(
+      mswHttp.get('*/api/users', async () => {
+        await delay(60);
+        return HttpResponse.json({ data: [], total: 0 });
+      }),
+    );
+    renderWithProviders(<UsersPage />);
+    expect(await screen.findByRole('status')).toBeInTheDocument();
+  });
+
+  it('shows a first-run empty state with an add action', async () => {
+    server.use(mswHttp.get('*/api/users', () => HttpResponse.json({ data: [], total: 0 })));
+    renderWithProviders(<UsersPage />);
+    expect(await screen.findByText('No users yet.')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button', { name: 'Add your first user' }));
+    expect(screen.getByLabelText('Name')).toBeInTheDocument();
   });
 
   it('shows an error state when the list request fails', async () => {
