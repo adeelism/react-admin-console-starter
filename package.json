@@ -21,15 +21,21 @@
     "prepare": "husky || true"
   },
   "dependencies": {
+    "@hookform/resolvers": "^5.9.1",
+    "@phosphor-icons/react": "^2.1.10",
     "@tanstack/react-query": "^5.62.7",
+    "clsx": "^2.1.1",
     "i18next": "^24.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.88.0",
     "react-i18next": "^15.4.0",
-    "react-router-dom": "^7.1.1"
+    "react-router-dom": "^7.1.1",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@tailwindcss/vite": "^4.3.3",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/user-event": "^14.5.2",
@@ -47,6 +53,7 @@
     "jsdom": "^25.0.1",
     "msw": "^2.7.0",
     "prettier": "^3.4.2",
+    "tailwindcss": "^4.3.3",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.1",
     "vite": "^6.0.5",
