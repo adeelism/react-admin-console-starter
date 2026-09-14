@@ -2,23 +2,35 @@ import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UsersThree, UserCheck, EnvelopeSimple, Prohibit } from '@phosphor-icons/react';
 import { useUsers } from '../../users/hooks';
+import type { UserListParams } from '../../users/types';
 import { PageHeader } from '../../../components/molecules/PageHeader';
 import { StatCard } from '../../../components/molecules/StatCard';
 import { Spinner } from '../../../components/atoms/Spinner';
 
+// Pull a single, unfiltered page large enough to count the whole workspace.
+const STATS_PARAMS: UserListParams = {
+  search: '',
+  role: 'all',
+  status: 'all',
+  sort: 'name',
+  order: 'asc',
+  page: 1,
+  pageSize: 100,
+};
+
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const { data: users, isLoading, isError } = useUsers();
+  const { data, isLoading, isError } = useUsers(STATS_PARAMS);
 
   const stats = useMemo(() => {
-    const list = users ?? [];
+    const list = data?.data ?? [];
     return {
-      total: list.length,
+      total: data?.total ?? list.length,
       active: list.filter((user) => user.status === 'active').length,
       invited: list.filter((user) => user.status === 'invited').length,
       suspended: list.filter((user) => user.status === 'suspended').length,
     };
-  }, [users]);
+  }, [data]);
 
   if (isLoading) {
     return <Spinner label={t('common.loading')} />;
