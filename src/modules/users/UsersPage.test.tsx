@@ -11,20 +11,20 @@ const viewer = { id: 'u', name: 'Val Viewer', role: 'viewer' as const };
 describe('UsersPage', () => {
   it('lists users from the API', async () => {
     renderWithProviders(<UsersPage />);
-    expect(await screen.findByText('Ada Admin')).toBeInTheDocument();
-    expect(screen.getByText('ivan@example.com')).toBeInTheDocument();
+    expect(await screen.findByText('Ada Okafor')).toBeInTheDocument();
+    expect(screen.getByText('ivan.petrov@example.com')).toBeInTheDocument();
   });
 
   it('hides the create form and row actions for a viewer', async () => {
     renderWithProviders(<UsersPage />, { user: viewer });
-    await screen.findByText('Ada Admin');
+    await screen.findByText('Ada Okafor');
     expect(screen.queryByRole('form')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
   });
 
   it('creates a user as an admin', async () => {
     renderWithProviders(<UsersPage />);
-    await screen.findByText('Ada Admin');
+    await screen.findByText('Ada Okafor');
     await userEvent.type(screen.getByLabelText('Name'), 'New Person');
     await userEvent.type(screen.getByLabelText('Email'), 'new@example.com');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
@@ -33,8 +33,8 @@ describe('UsersPage', () => {
 
   it('edits an existing user as an admin', async () => {
     renderWithProviders(<UsersPage />);
-    await screen.findByText('Ada Admin');
-    const row = screen.getByText('Ada Admin').closest('tr');
+    await screen.findByText('Ada Okafor');
+    const row = screen.getByText('Ada Okafor').closest('tr');
     await userEvent.click(within(row as HTMLElement).getByRole('button', { name: 'Edit' }));
     const nameInput = screen.getByLabelText('Name');
     await userEvent.clear(nameInput);
@@ -45,10 +45,10 @@ describe('UsersPage', () => {
 
   it('deletes a user as an admin', async () => {
     renderWithProviders(<UsersPage />);
-    await screen.findByText('Ivan Auditor');
-    const row = screen.getByText('Ivan Auditor').closest('tr');
+    await screen.findByText('Ivan Petrov');
+    const row = screen.getByText('Ivan Petrov').closest('tr');
     await userEvent.click(within(row as HTMLElement).getByRole('button', { name: 'Delete' }));
-    await waitFor(() => expect(screen.queryByText('Ivan Auditor')).not.toBeInTheDocument());
+    await waitFor(() => expect(screen.queryByText('Ivan Petrov')).not.toBeInTheDocument());
   });
 
   it('shows an error state when the list request fails', async () => {
