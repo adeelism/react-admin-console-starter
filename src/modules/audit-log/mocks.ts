@@ -4,21 +4,21 @@ import type { AuditLogEntry } from './types';
 const entries: AuditLogEntry[] = [
   {
     id: 'a_1',
-    actor: 'ada@example.com',
+    actor: 'ada.okafor@example.com',
     action: 'user.created',
     target: 'u_2',
     createdAt: '2026-01-02T10:00:00Z',
   },
   {
     id: 'a_2',
-    actor: 'ada@example.com',
+    actor: 'ada.okafor@example.com',
     action: 'user.updated',
     target: 'u_2',
     createdAt: '2026-01-03T11:30:00Z',
   },
   {
     id: 'a_3',
-    actor: 'ivan@example.com',
+    actor: 'ivan.petrov@example.com',
     action: 'user.deleted',
     target: 'u_3',
     createdAt: '2026-01-04T09:15:00Z',

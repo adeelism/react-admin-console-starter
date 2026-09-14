@@ -23,22 +23,29 @@ function renderLayout() {
 }
 
 describe('AppLayout', () => {
-  it('renders the nav and the routed child', () => {
+  it('renders the sidebar nav and the routed child', () => {
     renderLayout();
     expect(screen.getByRole('navigation')).toBeInTheDocument();
     expect(screen.getByText('users child')).toBeInTheDocument();
   });
 
-  it('switches role and language and toggles the theme', async () => {
+  it('hides nav items the current role cannot access', async () => {
+    renderLayout();
+    // Admin (default) sees the audit log link…
+    expect(screen.getByRole('link', { name: 'Audit log' })).toBeInTheDocument();
+    // …a viewer, who lacks audit-log:read, does not.
+    await userEvent.selectOptions(screen.getByLabelText('Role'), 'viewer');
+    expect(screen.queryByRole('link', { name: 'Audit log' })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Users' })).toBeInTheDocument();
+  });
+
+  it('switches language and toggles the theme', async () => {
     renderLayout();
 
-    await userEvent.selectOptions(screen.getByLabelText('Role'), 'viewer');
-    expect((screen.getByLabelText('Role') as HTMLSelectElement).value).toBe('viewer');
+    await userEvent.selectOptions(screen.getByLabelText('Language'), 'xx');
+    expect((await screen.findAllByText('Users (xx)')).length).toBeGreaterThan(0);
 
-    await userEvent.selectOptions(screen.getByLabelText('language'), 'xx');
-    expect(await screen.findByText('Users (xx)')).toBeInTheDocument();
-
-    await userEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button', { name: /toggle theme/i }));
     expect(document.documentElement.dataset.theme).toBe('dark');
   });
 });

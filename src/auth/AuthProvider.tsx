@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState, type ReactNode } from 'react';
 import { AuthContext, type AuthUser } from './auth-context';
 import { permissionsForRole, type Permission, type Role } from './permissions';
 
-const DEFAULT_USER: AuthUser = { id: 'u_1', name: 'Ada Admin', role: 'admin' };
+const DEFAULT_USER: AuthUser = { id: 'u_1', name: 'Ada Okafor', role: 'admin' };
 
 /**
  * Holds the current user and derives their permissions. In a real app the user
