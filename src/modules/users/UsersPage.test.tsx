@@ -95,7 +95,8 @@ describe('UsersPage', () => {
     await userEvent.clear(nameInput);
     await userEvent.type(nameInput, 'Ada Prime');
     await userEvent.click(screen.getByRole('button', { name: 'Save' }));
-    expect(await screen.findByText('Ada Prime')).toBeInTheDocument();
+    expect(await screen.findByText('User updated')).toBeInTheDocument();
+    expect(await screen.findByText('Ada Prime', undefined, { timeout: 3000 })).toBeInTheDocument();
   });
 
   it('deletes a user after confirmation', async () => {

@@ -84,15 +84,28 @@
     "toastCreated": "User created",
     "toastUpdated": "User updated",
     "toastDeleted": "User deleted",
-    "toastError": "Something went wrong. Please try again."
+    "toastError": "Something went wrong. Please try again.",
+    "perm": {
+      "note": "You are signed in as {{role}}. Here's what that role can do:",
+      "view": "View users",
+      "manage": "Create, edit & delete",
+      "audit": "View audit log"
+    }
   },
   "auditLog": {
     "title": "Audit log",
+    "subtitle": "Every change, who made it, and what it touched.",
     "actor": "Actor",
     "action": "Action",
     "target": "Target",
     "time": "Time",
     "filter": "Filter by action",
+    "filterActor": "Filter by actor",
+    "allActions": "All actions",
+    "verbCreated": "created",
+    "verbUpdated": "updated",
+    "verbDeleted": "deleted",
+    "toggleDetails": "Toggle details",
     "empty": "No entries."
   },
   "settings": {

@@ -1,6 +1,10 @@
 import { http, HttpResponse } from 'msw';
 import type { CreateUserInput, SortOrder, User, UserSortField } from './types';
 import { usersSeed } from './seed';
+import { addAuditEntry } from '../audit-log/store';
+
+// The acting admin for demo purposes; a real backend would use the auth context.
+const ADMIN_ACTOR = 'ada.okafor@example.com';
 
 let store: User[] = [...usersSeed];
 let counter = store.length;
@@ -61,6 +65,13 @@ export const usersHandlers = [
       lastActiveAt: null,
     };
     store = [user, ...store];
+    addAuditEntry({
+      actor: ADMIN_ACTOR,
+      action: 'user.created',
+      target: user.email,
+      before: null,
+      after: { name: user.name, email: user.email, role: user.role, status: user.status },
+    });
     return HttpResponse.json(user, { status: 201 });
   }),
 
@@ -73,12 +84,29 @@ export const usersHandlers = [
     }
     const updated: User = { ...existing, ...input };
     store = store.map((user) => (user.id === id ? updated : user));
+    addAuditEntry({
+      actor: ADMIN_ACTOR,
+      action: 'user.updated',
+      target: updated.email,
+      before: { name: existing.name, email: existing.email, role: existing.role },
+      after: { name: updated.name, email: updated.email, role: updated.role },
+    });
     return HttpResponse.json(updated);
   }),
 
   http.delete('*/api/users/:id', ({ params }) => {
     const id = String(params.id);
+    const existing = store.find((user) => user.id === id);
     store = store.filter((user) => user.id !== id);
+    if (existing) {
+      addAuditEntry({
+        actor: ADMIN_ACTOR,
+        action: 'user.deleted',
+        target: existing.email,
+        before: { name: existing.name, email: existing.email, role: existing.role },
+        after: null,
+      });
+    }
     return new HttpResponse(null, { status: 204 });
   }),
 ];

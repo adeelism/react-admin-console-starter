@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 import { auditLogApi } from './api';
 
-export function useAuditLog(action: string) {
+export function useAuditLog(params: { action: string; actor: string }) {
   return useQuery({
-    queryKey: ['audit-log', { action }],
-    queryFn: () => auditLogApi.list(action ? { action } : undefined),
+    queryKey: ['audit-log', params],
+    queryFn: () =>
+      auditLogApi.list({ action: params.action || undefined, actor: params.actor || undefined }),
   });
 }
