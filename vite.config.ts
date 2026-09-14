@@ -4,6 +4,13 @@ import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  build: {
+    // Routes are already code-split via React.lazy (see router.tsx), so each page
+    // loads on demand. The remaining vendor bundle is one cached chunk; lift the
+    // advisory size warning rather than hand-splitting node_modules, which risks
+    // cross-chunk initialization-order bugs.
+    chunkSizeWarningLimit: 900,
+  },
   test: {
     globals: true,
     environment: 'jsdom',

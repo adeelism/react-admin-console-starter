@@ -1,5 +1,9 @@
 {
   "app": { "title": "Admin Console" },
+  "demo": {
+    "title": "Live demo",
+    "hint": "No login — switch roles to watch permissions change."
+  },
   "nav": {
     "primary": "Primary",
     "dashboard": "Dashboard",
