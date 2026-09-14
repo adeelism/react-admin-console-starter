@@ -12,4 +12,10 @@ describe('DashboardPage', () => {
     expect(screen.getByText('Pending invites')).toBeInTheDocument();
     expect(screen.getByText('20')).toBeInTheDocument(); // active users in the seed
   });
+
+  it('shows recent activity pulled from the audit log', async () => {
+    renderWithProviders(<DashboardPage />);
+    expect(await screen.findByText('Recent activity')).toBeInTheDocument();
+    expect(await screen.findByText('aisha.bello@example.com')).toBeInTheDocument();
+  });
 });

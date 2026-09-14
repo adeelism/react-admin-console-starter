@@ -4,7 +4,7 @@ import { Plus } from '@phosphor-icons/react';
 import { useAuth } from '../../../auth/useAuth';
 import { useToast } from '../../../components/toast/useToast';
 import { PageHeader } from '../../../components/molecules/PageHeader';
-import { Spinner } from '../../../components/atoms/Spinner';
+import { UsersTableSkeleton } from '../components/UsersTableSkeleton';
 import { EmptyState } from '../../../components/molecules/EmptyState';
 import { ErrorState } from '../../../components/molecules/ErrorState';
 import { ConfirmDialog } from '../../../components/molecules/ConfirmDialog';
@@ -152,7 +152,7 @@ export default function UsersPage() {
       ) : null}
 
       {isLoading ? (
-        <Spinner label={t('common.loading')} />
+        <UsersTableSkeleton />
       ) : isError ? (
         <ErrorState
           message={t('common.error')}
@@ -162,7 +162,13 @@ export default function UsersPage() {
       ) : rows.length === 0 ? (
         <EmptyState
           title={table.isFiltered ? t('users.noMatchTitle') : t('users.empty')}
-          message={table.isFiltered ? t('users.noMatchMessage') : undefined}
+          message={
+            table.isFiltered
+              ? t('users.noMatchMessage')
+              : canWrite
+                ? t('users.emptyHint')
+                : undefined
+          }
           action={
             table.isFiltered ? (
               <button
@@ -170,6 +176,13 @@ export default function UsersPage() {
                 className="rounded-md border border-border bg-card px-3 py-1.5 text-sm font-medium text-text hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
               >
                 {t('users.clearFilters')}
+              </button>
+            ) : canWrite ? (
+              <button
+                onClick={openCreate}
+                className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-on-accent hover:bg-accent-hover focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                {t('users.addFirst')}
               </button>
             ) : undefined
           }

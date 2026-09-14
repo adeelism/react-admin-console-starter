@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageHeader } from '../../../components/molecules/PageHeader';
-import { Spinner } from '../../../components/atoms/Spinner';
+import { Skeleton } from '../../../components/atoms/Skeleton';
 import { EmptyState } from '../../../components/molecules/EmptyState';
 import { ErrorState } from '../../../components/molecules/ErrorState';
 import { useAuditLog } from '../hooks';
@@ -51,7 +51,15 @@ export default function AuditLogPage() {
       </div>
 
       {isLoading ? (
-        <Spinner label={t('common.loading')} />
+        <div
+          role="status"
+          aria-label={t('common.loading')}
+          className="space-y-3 rounded-lg border border-border bg-card p-4"
+        >
+          {Array.from({ length: 5 }, (_, index) => (
+            <Skeleton key={index} className="h-10 w-full" />
+          ))}
+        </div>
       ) : isError ? (
         <ErrorState
           message={t('common.error')}
