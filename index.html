@@ -4,6 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Console</title>
+    <script>
+      // Pre-paint: apply the persisted locale's direction before React mounts so
+      // an Arabic reload never flashes left-to-right. Mirrors the RTL locale list
+      // in src/i18n/locales.ts (kept trivial and documented in the README).
+      (function () {
+        try {
+          var code = localStorage.getItem('admin-console.locale') || 'en';
+          var el = document.documentElement;
+          el.lang = code;
+          el.dir = code === 'ar' ? 'rtl' : 'ltr';
+        } catch (e) {
+          /* storage unavailable — defaults from the markup stand */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

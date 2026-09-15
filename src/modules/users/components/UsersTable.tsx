@@ -52,7 +52,7 @@ export function UsersTable(props: UsersTableProps) {
                 <th
                   key={col.field}
                   aria-sort={active ? (order === 'asc' ? 'ascending' : 'descending') : 'none'}
-                  className="px-3 py-2 text-left"
+                  className="px-3 py-2 text-start"
                 >
                   <button
                     onClick={() => onToggleSort(col.field)}
@@ -64,7 +64,7 @@ export function UsersTable(props: UsersTableProps) {
                 </th>
               );
             })}
-            <th className="px-3 py-2 text-right text-xs font-semibold tracking-wide text-faint uppercase">
+            <th className="px-3 py-2 text-end text-xs font-semibold tracking-wide text-faint uppercase">
               {t('users.actions')}
             </th>
           </tr>

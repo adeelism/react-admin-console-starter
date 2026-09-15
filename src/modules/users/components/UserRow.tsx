@@ -31,7 +31,7 @@ export const UserRow = memo(function UserRow({
   onEdit,
   onDelete,
 }: UserRowProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <tr
@@ -64,9 +64,11 @@ export const UserRow = memo(function UserRow({
         <Badge tone={STATUS_TONE[user.status]}>{t(`users.statuses.${user.status}`)}</Badge>
       </td>
       <td className="px-3 py-2 text-sm whitespace-nowrap text-muted">
-        {user.lastActiveAt ? formatRelativeTime(user.lastActiveAt) : t('users.never')}
+        {user.lastActiveAt
+          ? formatRelativeTime(user.lastActiveAt, undefined, i18n.language)
+          : t('users.never')}
       </td>
-      <td className="px-3 py-2 text-right">
+      <td className="px-3 py-2 text-end">
         {canWrite ? (
           <div className="flex justify-end gap-1">
             <button

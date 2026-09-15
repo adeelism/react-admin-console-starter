@@ -1,9 +1,0 @@
-{
-  "app": { "title": "Admin Console (xx)" },
-  "nav": {
-    "dashboard": "Dashboard (xx)",
-    "users": "Users (xx)",
-    "auditLog": "Audit log (xx)",
-    "settings": "Settings (xx)"
-  }
-}

@@ -35,11 +35,11 @@ export function Topbar() {
     <header className="flex items-center gap-4 border-b border-border bg-bg px-6 py-3">
       <h2 className="text-sm font-semibold text-text">{title}</h2>
 
-      <form role="search" onSubmit={onSearch} className="ml-auto w-full max-w-xs">
+      <form role="search" onSubmit={onSearch} className="ms-auto w-full max-w-xs">
         <div className="relative">
           <MagnifyingGlass
             size={16}
-            className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-faint"
+            className="pointer-events-none absolute start-3 top-1/2 -translate-y-1/2 text-faint"
             aria-hidden
           />
           <input
@@ -48,7 +48,7 @@ export function Topbar() {
             onChange={(event) => setTerm(event.target.value)}
             placeholder={t('search.placeholder')}
             aria-label={t('search.label')}
-            className="w-full rounded-md border border-border bg-surface py-2 pr-3 pl-9 text-sm text-text placeholder:text-faint focus-visible:outline-2 focus-visible:outline-accent"
+            className="w-full rounded-md border border-border bg-surface py-2 pe-3 ps-9 text-sm text-text placeholder:text-faint focus-visible:outline-2 focus-visible:outline-accent"
           />
         </div>
       </form>

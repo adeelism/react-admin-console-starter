@@ -50,7 +50,7 @@ export function UsersPagination({
             aria-label={t('users.prev')}
             className={BTN}
           >
-            <CaretLeft size={16} aria-hidden />
+            <CaretLeft size={16} className="rtl:-scale-x-100" aria-hidden />
           </button>
           <button
             onClick={() => onPage(page + 1)}
@@ -58,7 +58,7 @@ export function UsersPagination({
             aria-label={t('users.next')}
             className={BTN}
           >
-            <CaretRight size={16} aria-hidden />
+            <CaretRight size={16} className="rtl:-scale-x-100" aria-hidden />
           </button>
         </div>
       </div>

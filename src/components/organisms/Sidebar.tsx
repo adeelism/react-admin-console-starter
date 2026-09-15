@@ -13,7 +13,7 @@ export function Sidebar() {
   const items = NAV_ITEMS.filter((item) => !item.requires || can(item.requires));
 
   return (
-    <aside className="flex h-full flex-col border-r border-border bg-surface">
+    <aside className="flex h-full flex-col border-e border-border bg-surface">
       <div className="flex items-center gap-2 px-4 py-4">
         <span
           className="grid size-8 place-items-center rounded-md bg-accent text-sm font-bold text-on-accent"

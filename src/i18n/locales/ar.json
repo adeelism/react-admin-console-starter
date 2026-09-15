@@ -1,0 +1,133 @@
+{
+  "app": { "title": "لوحة الإدارة" },
+  "demo": {
+    "title": "عرض تجريبي",
+    "hint": "بدون تسجيل دخول — بدّل الأدوار لمشاهدة تغيّر الصلاحيات."
+  },
+  "nav": {
+    "primary": "التنقّل الرئيسي",
+    "dashboard": "لوحة المعلومات",
+    "users": "المستخدمون",
+    "auditLog": "سجل التدقيق",
+    "settings": "الإعدادات"
+  },
+  "role": {
+    "label": "الدور",
+    "names": {
+      "admin": "مدير",
+      "editor": "محرّر",
+      "auditor": "مدقّق",
+      "viewer": "مشاهد"
+    }
+  },
+  "language": { "label": "اللغة" },
+  "search": { "label": "بحث", "placeholder": "ابحث عن المستخدمين…" },
+  "theme": { "light": "فاتح", "dark": "داكن", "toggle": "تبديل السمة" },
+  "common": {
+    "loading": "جارٍ التحميل",
+    "error": "حدث خطأ ما.",
+    "retry": "أعد المحاولة",
+    "close": "إغلاق",
+    "cancel": "إلغاء",
+    "saving": "جارٍ الحفظ…",
+    "dismiss": "تجاهل"
+  },
+  "forbidden": "ليس لديك إذن لعرض هذه الصفحة.",
+  "dashboard": {
+    "title": "لوحة المعلومات",
+    "subtitle": "نظرة عامة على مساحة عملك.",
+    "totalUsers": "إجمالي المستخدمين",
+    "active": "نشط",
+    "invited": "دعوات معلّقة",
+    "suspended": "موقوف",
+    "recentActivity": "النشاط الأخير"
+  },
+  "users": {
+    "title": "المستخدمون",
+    "subtitle": "أدر الأشخاص في مساحة عملك.",
+    "user": "المستخدم",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "role": "الدور",
+    "status": "الحالة",
+    "lastActive": "آخر نشاط",
+    "actions": "إجراءات",
+    "add": "إضافة مستخدم",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "save": "حفظ",
+    "cancel": "إلغاء",
+    "never": "أبدًا",
+    "empty": "لا يوجد مستخدمون بعد.",
+    "emptyHint": "أضف أول مستخدم للبدء.",
+    "addFirst": "أضف أول مستخدم",
+    "statuses": {
+      "active": "نشط",
+      "invited": "مدعو",
+      "suspended": "موقوف"
+    },
+    "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني…",
+    "filterRole": "تصفية حسب الدور",
+    "filterStatus": "تصفية حسب الحالة",
+    "allRoles": "كل الأدوار",
+    "allStatuses": "كل الحالات",
+    "selectAll": "تحديد كل الصفوف",
+    "selectRow": "تحديد {{name}}",
+    "rowsPerPage": "صفوف لكل صفحة",
+    "pageInfo": "{{from}}–{{to}} من {{total}}",
+    "prev": "الصفحة السابقة",
+    "next": "الصفحة التالية",
+    "selectedCount": "{{count}} محدَّد",
+    "deleteSelected": "حذف المحدَّد",
+    "clearSelection": "إلغاء التحديد",
+    "noMatchTitle": "لا يوجد مستخدمون مطابقون لعوامل التصفية",
+    "noMatchMessage": "جرّب بحثًا مختلفًا، أو امسح عوامل التصفية لعرض الجميع.",
+    "clearFilters": "مسح عوامل التصفية",
+    "editUser": "تعديل المستخدم",
+    "errors": {
+      "nameRequired": "الاسم مطلوب",
+      "emailInvalid": "أدخل بريدًا إلكترونيًا صالحًا"
+    },
+    "confirmDeleteTitle": "حذف المستخدم",
+    "confirmDeleteMessage": "حذف {{name}}؟ لا يمكن التراجع عن هذا الإجراء.",
+    "confirmBulkTitle": "حذف المستخدمين",
+    "confirmBulkMessage": "حذف {{count}} من المستخدمين المحدَّدين؟ لا يمكن التراجع عن هذا الإجراء.",
+    "toastCreated": "تم إنشاء المستخدم",
+    "toastUpdated": "تم تحديث المستخدم",
+    "toastDeleted": "تم حذف المستخدم",
+    "toastError": "حدث خطأ ما. يرجى المحاولة مرة أخرى.",
+    "perm": {
+      "note": "أنت مسجَّل الدخول بصفة {{role}}. هذا ما يمكن لهذا الدور فعله:",
+      "view": "عرض المستخدمين",
+      "manage": "الإنشاء والتعديل والحذف",
+      "audit": "عرض سجل التدقيق"
+    }
+  },
+  "auditLog": {
+    "title": "سجل التدقيق",
+    "subtitle": "كل تغيير، ومن أجراه، وما الذي مسّه.",
+    "actor": "المنفِّذ",
+    "action": "الإجراء",
+    "target": "الهدف",
+    "time": "الوقت",
+    "filter": "تصفية حسب الإجراء",
+    "filterActor": "تصفية حسب المنفِّذ",
+    "allActions": "كل الإجراءات",
+    "verbCreated": "أنشأ",
+    "verbUpdated": "حدّث",
+    "verbDeleted": "حذف",
+    "toggleDetails": "تبديل التفاصيل",
+    "empty": "لا توجد إدخالات.",
+    "sentence": {
+      "created": "أنشأ <0>{{actor}}</0> <1>{{target}}</1>",
+      "updated": "حدّث <0>{{actor}}</0> <1>{{target}}</1>",
+      "deleted": "حذف <0>{{actor}}</0> <1>{{target}}</1>",
+      "generic": "<0>{{actor}}</0> {{action}} <1>{{target}}</1>"
+    }
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "subtitle": "إعدادات مساحة العمل.",
+    "placeholder": "توجد الإعدادات هنا. هذه الصفحة موجودة لاستكمال هيكل لوحة التحكم."
+  }
+}

@@ -22,7 +22,7 @@ export function DemoBanner() {
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 bg-accent px-4 py-2 text-sm text-on-accent">
       <span className="font-semibold">{t('demo.title')}</span>
       <span className="text-on-accent/85">{t('demo.hint')}</span>
-      <div className="ml-auto flex items-center gap-1">
+      <div className="ms-auto flex items-center gap-1">
         {ROLES.map((role) => (
           <button
             key={role}
@@ -39,7 +39,7 @@ export function DemoBanner() {
         <button
           onClick={() => setDismissed(true)}
           aria-label={t('common.dismiss')}
-          className="ml-1 rounded p-1 hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-white"
+          className="ms-1 rounded p-1 hover:bg-white/15 focus-visible:outline-2 focus-visible:outline-white"
         >
           <X size={14} aria-hidden />
         </button>

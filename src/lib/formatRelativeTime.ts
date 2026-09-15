@@ -1,3 +1,5 @@
+import { resolveIntlLocale } from './intlLocale';
+
 const DIVISIONS: { amount: number; unit: Intl.RelativeTimeFormatUnit }[] = [
   { amount: 60, unit: 'second' },
   { amount: 60, unit: 'minute' },
@@ -8,10 +10,25 @@ const DIVISIONS: { amount: number; unit: Intl.RelativeTimeFormatUnit }[] = [
   { amount: Number.POSITIVE_INFINITY, unit: 'year' },
 ];
 
-const formatter = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+// One formatter per resolved locale, built lazily and reused.
+const formatters = new Map<string, Intl.RelativeTimeFormat>();
 
-/** Human relative time, e.g. "3 days ago" / "in 2 hours". `now` is injectable for tests. */
-export function formatRelativeTime(iso: string, now: Date = new Date()): string {
+function formatterFor(locale: string): Intl.RelativeTimeFormat {
+  const resolved = resolveIntlLocale(locale);
+  let formatter = formatters.get(resolved);
+  if (!formatter) {
+    formatter = new Intl.RelativeTimeFormat(resolved, { numeric: 'auto' });
+    formatters.set(resolved, formatter);
+  }
+  return formatter;
+}
+
+/**
+ * Human relative time, e.g. "3 days ago" / "in 2 hours" (Arabic: "منذ ٣ أيام"
+ * with Latin digits). `now` is injectable for tests; `locale` defaults to `en`.
+ */
+export function formatRelativeTime(iso: string, now: Date = new Date(), locale = 'en'): string {
+  const formatter = formatterFor(locale);
   let duration = (new Date(iso).getTime() - now.getTime()) / 1000;
   for (const division of DIVISIONS) {
     if (Math.abs(duration) < division.amount) {
