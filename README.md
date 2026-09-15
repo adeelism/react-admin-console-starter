@@ -8,7 +8,7 @@ TanStack Query · React Router · MSW · i18next. Module-first structure, a perm
 can watch working, a URL-synced data table, modal forms with validation, toasts, an audit log
 wired to real actions, and designed loading / empty / error states — all backed by a Vitest suite.
 
-**▶ Live demo: https://react-admin-console-starter.vercel.app** — no login; use the demo banner
+**▶ Live demo: https://react-admin-console-starter.vercel.app/dashboard** — no login; use the demo banner
 to switch roles and watch the UI change.
 
 > It's a **starter**, not a product: no component library, an in-browser mock data layer behind a
