@@ -1,12 +1,21 @@
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { http as mswHttp, HttpResponse, delay } from 'msw';
 import UsersPage from './pages/UsersPage';
 import { renderWithProviders } from '../../test/utils';
 import { server } from '../../mocks/server';
+import i18n from '../../i18n';
 
 const viewer = { id: 'u', name: 'Val Viewer', role: 'viewer' as const };
+
+// The i18n instance is a shared singleton; restore English (and LTR) after each
+// test so the Arabic case can't leak into the label-based assertions above.
+afterEach(() => {
+  void i18n.changeLanguage('en');
+  document.documentElement.dir = 'ltr';
+  document.documentElement.lang = 'en';
+});
 
 describe('UsersPage', () => {
   it('lists the first page of users sorted by name', async () => {
@@ -153,5 +162,18 @@ describe('UsersPage', () => {
     server.use(mswHttp.get('*/api/users', () => new HttpResponse(null, { status: 500 })));
     renderWithProviders(<UsersPage />);
     expect(await screen.findByRole('alert')).toBeInTheDocument();
+  });
+
+  it('renders translated column headers under RTL when the locale is Arabic', async () => {
+    document.documentElement.dir = 'rtl';
+    await i18n.changeLanguage('ar');
+    renderWithProviders(<UsersPage />);
+
+    // Data still loads (names are not translated); the table chrome is Arabic.
+    expect(await screen.findByText('Ada Okafor')).toBeInTheDocument();
+    const table = screen.getByRole('table');
+    expect(within(table).getByText('المستخدم')).toBeInTheDocument(); // "User"
+    expect(within(table).getByText('الدور')).toBeInTheDocument(); // "Role"
+    expect(document.documentElement.dir).toBe('rtl');
   });
 });

@@ -24,6 +24,10 @@ to switch roles and watch the UI change.
 | --- | --- |
 | ![Users table, dark theme](docs/screenshots/users-dark.png) | ![Audit log](docs/screenshots/audit-log.png) |
 
+| Users — Arabic (RTL) |
+| --- |
+| ![Users table in Arabic, right-to-left](docs/screenshots/users-ar.png) |
+
 ## What's in it
 
 - **Dashboard** — stat cards plus a recent-activity feed pulled from the audit log.
@@ -39,7 +43,9 @@ to switch roles and watch the UI change.
 - **States by design** — loading skeletons, first-run and no-match empty states, recoverable errors.
 - **Accessible** — keyboard-navigable, visible focus rings, `aria-*`, focus-trapped modal, respects
   `prefers-reduced-motion`.
-- **Theming & i18n** — deliberate light/dark via CSS-variable design tokens; strings via `t()`.
+- **Theming & i18n** — deliberate light/dark via CSS-variable design tokens; every string via `t()`,
+  shipping **English and Arabic with full right-to-left** layout (logical CSS, mirrored icons,
+  locale-aware dates).
 
 ## Architecture
 
@@ -71,7 +77,7 @@ src/
   hooks/          useUrlState.ts (reusable URL <-> state sync)
   auth/           AuthProvider · useAuth · ProtectedRoute · permissions
   theme/          ThemeProvider · ThemeToggle · theme.css (design tokens)
-  i18n/           init + locales (en + xx stub)
+  i18n/           init · locale registry · direction hook (en + ar, full RTL)
   components/
     atoms/        Button · Spinner · Badge · Skeleton
     molecules/    Avatar · PageHeader · StatCard · EmptyState · ErrorState ·
@@ -133,6 +139,36 @@ The suite targets the parts that carry judgement — the permission logic, the `
 table's filter/sort/paginate, the modal + confirm flows, toasts, and the audit store — rather than
 coverage theatre. CI runs lint → typecheck → test (coverage) → build on every push and PR.
 
+## Internationalization & RTL
+
+Strings render through `t()` (react-i18next). The app ships **English** and **Arabic with full
+right-to-left** layout — genuine mirroring, not string swapping:
+
+- **Direction is data.** A locale registry (`src/i18n/locales.ts`) declares each locale's `dir`; an
+  effect hook (`useLocaleDirection`) mirrors the active locale onto `<html lang/dir>` and persists
+  it, and a pre-paint script in `index.html` applies it before React mounts so an Arabic reload
+  never flashes left-to-right.
+- **Logical CSS, not overrides.** Layout uses Tailwind's logical utilities (`ms/me`, `ps/pe`,
+  `start/end`, `border-e`, `text-start/end`), so the same markup mirrors under `dir="rtl"` with no
+  `[dir=rtl] … {}` rules — and English renders identically to before.
+- **Selective icon mirroring.** Only *directional* glyphs flip (`rtl:-scale-x-100` on the pagination
+  and expand carets); object icons (search, trash, clock) are left alone.
+- **Latin digits in both locales.** Numbers stay Western even in Arabic (`Intl` with the
+  `ar-AE-u-nu-latn` extension); only the words around them localize.
+- **Reorderable sentences.** The audit "actor · verb · target" line is one interpolated `<Trans>`
+  template per action (`AuditSentence`), so Arabic grammar reorders it naturally.
+
+### Adding a locale
+
+1. Add `src/i18n/locales/<code>.json` — copy `en.json` and translate the values, keeping the keys (a
+   `keyParity` test fails the build if they drift).
+2. Add one entry to `LOCALES` in `src/i18n/locales.ts` (`code`, `nativeName`, `dir`, `resource`).
+3. If the locale is right-to-left, add its `code` to the small `dir` check in the `index.html`
+   pre-paint script — the one place that can't import the registry.
+
+The switcher, i18n init, and `<html>` wiring all derive from the registry, so there's nothing else
+to touch.
+
 ## Deploy (Vercel)
 
 The repo is Vercel-ready: `vercel.json` rewrites all routes to `index.html` (SPA routing), and
@@ -153,6 +189,12 @@ The repo is Vercel-ready: `vercel.json` rewrites all routes to `index.html` (SPA
   the code readable — the point of a starter.
 - **MSW as the single mock source.** The same handlers serve the browser (per-module toggle) and the
   tests, and a shared audit store lets a write on one page appear on another — so mocks can't drift.
+- **Logical CSS over `[dir=rtl]` overrides.** One set of direction-agnostic utilities mirrors for
+  free and can't fall out of sync with a separate LTR rule; RTL is wiring, not a second stylesheet.
+- **Latin digits in both locales.** Admin data is scanned, sorted, and compared — consistent Western
+  figures read faster here than Arabic-Indic ones, so only the words localize.
+- **Only directional icons mirror.** A caret means "next / previous" and must follow reading order; a
+  trash, search, or clock glyph means the same thing in any direction and stays put.
 - **Custom permission context**, not a router loader — explicit, testable, and ready for a real auth
   backend behind `AuthProvider` (pairs with [`nestjs-cognito-auth-starter`](https://github.com/adeelism/nestjs-cognito-auth-starter)).
 - **`App.tsx` excluded from coverage** — pure composition, covered indirectly by layout/router/page tests.

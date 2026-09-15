@@ -113,7 +113,13 @@
     "verbUpdated": "updated",
     "verbDeleted": "deleted",
     "toggleDetails": "Toggle details",
-    "empty": "No entries."
+    "empty": "No entries.",
+    "sentence": {
+      "created": "<0>{{actor}}</0> created <1>{{target}}</1>",
+      "updated": "<0>{{actor}}</0> updated <1>{{target}}</1>",
+      "deleted": "<0>{{actor}}</0> deleted <1>{{target}}</1>",
+      "generic": "<0>{{actor}}</0> {{action}} <1>{{target}}</1>"
+    }
   },
   "settings": {
     "title": "Settings",

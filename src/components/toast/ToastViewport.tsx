@@ -13,7 +13,7 @@ export function ToastViewport({ toasts, onDismiss }: ToastViewportProps) {
   if (toasts.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-[60] flex w-80 flex-col gap-2" aria-live="polite">
+    <div className="fixed top-4 end-4 z-[60] flex w-80 flex-col gap-2" aria-live="polite">
       {toasts.map((toast) => (
         <div
           key={toast.id}

@@ -1,16 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { useAuditLog } from '../../audit-log/hooks';
+import { AuditSentence } from '../../audit-log/components/AuditSentence';
 import { formatRelativeTime } from '../../../lib/formatRelativeTime';
 import { Skeleton } from '../../../components/atoms/Skeleton';
 
-const VERB_KEY: Record<string, string> = {
-  'user.created': 'auditLog.verbCreated',
-  'user.updated': 'auditLog.verbUpdated',
-  'user.deleted': 'auditLog.verbDeleted',
-};
-
 export function RecentActivity() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data, isLoading } = useAuditLog({ action: '', actor: '' });
   const entries = (data ?? []).slice(0, 5);
 
@@ -30,14 +25,10 @@ export function RecentActivity() {
           {entries.map((entry) => (
             <li key={entry.id} className="flex items-center justify-between gap-3 py-2 text-sm">
               <span className="min-w-0 truncate text-text">
-                <span className="font-medium">{entry.actor}</span>{' '}
-                <span className="text-muted">
-                  {VERB_KEY[entry.action] ? t(VERB_KEY[entry.action]) : entry.action}
-                </span>{' '}
-                <span className="font-medium">{entry.target}</span>
+                <AuditSentence actor={entry.actor} target={entry.target} action={entry.action} />
               </span>
               <span className="shrink-0 text-xs text-faint">
-                {formatRelativeTime(entry.createdAt)}
+                {formatRelativeTime(entry.createdAt, undefined, i18n.language)}
               </span>
             </li>
           ))}

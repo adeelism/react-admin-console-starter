@@ -3,37 +3,23 @@ import { useTranslation } from 'react-i18next';
 import { CaretRight, Clock, PencilSimple, Trash, UserPlus, type Icon } from '@phosphor-icons/react';
 import clsx from 'clsx';
 import { formatRelativeTime } from '../../../lib/formatRelativeTime';
+import { formatDateTime } from '../../../lib/formatDateTime';
+import { AuditSentence } from './AuditSentence';
 import type { AuditLogEntry } from '../types';
 
-const ACTION_META: Record<string, { icon: Icon; bg: string; fg: string; verbKey: string }> = {
-  'user.created': {
-    icon: UserPlus,
-    bg: 'bg-success-subtle',
-    fg: 'text-success',
-    verbKey: 'auditLog.verbCreated',
-  },
-  'user.updated': {
-    icon: PencilSimple,
-    bg: 'bg-info-subtle',
-    fg: 'text-info',
-    verbKey: 'auditLog.verbUpdated',
-  },
-  'user.deleted': {
-    icon: Trash,
-    bg: 'bg-danger-subtle',
-    fg: 'text-danger',
-    verbKey: 'auditLog.verbDeleted',
-  },
+const ACTION_META: Record<string, { icon: Icon; bg: string; fg: string }> = {
+  'user.created': { icon: UserPlus, bg: 'bg-success-subtle', fg: 'text-success' },
+  'user.updated': { icon: PencilSimple, bg: 'bg-info-subtle', fg: 'text-info' },
+  'user.deleted': { icon: Trash, bg: 'bg-danger-subtle', fg: 'text-danger' },
 };
-const DEFAULT_META = { icon: Clock, bg: 'bg-surface-2', fg: 'text-muted', verbKey: '' };
+const DEFAULT_META = { icon: Clock, bg: 'bg-surface-2', fg: 'text-muted' };
 
 export function AuditEntryItem({ entry }: { entry: AuditLogEntry }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [open, setOpen] = useState(false);
 
   const meta = ACTION_META[entry.action] ?? DEFAULT_META;
   const IconComponent = meta.icon;
-  const verb = meta.verbKey ? t(meta.verbKey) : entry.action;
   const keys = Array.from(
     new Set([...Object.keys(entry.before ?? {}), ...Object.keys(entry.after ?? {})]),
   );
@@ -49,15 +35,13 @@ export function AuditEntryItem({ entry }: { entry: AuditLogEntry }) {
         </span>
         <div className="min-w-0 flex-1">
           <p className="text-sm text-text">
-            <span className="font-medium">{entry.actor}</span>{' '}
-            <span className="text-muted">{verb}</span>{' '}
-            <span className="font-medium">{entry.target}</span>
+            <AuditSentence actor={entry.actor} target={entry.target} action={entry.action} />
           </p>
           <p className="mt-0.5 flex items-center gap-2 text-xs text-faint">
-            <span className="font-mono">{entry.action}</span>
+            <bdi className="font-mono">{entry.action}</bdi>
             <span aria-hidden>·</span>
-            <span title={new Date(entry.createdAt).toLocaleString()}>
-              {formatRelativeTime(entry.createdAt)}
+            <span title={formatDateTime(entry.createdAt, i18n.language)}>
+              {formatRelativeTime(entry.createdAt, undefined, i18n.language)}
             </span>
           </p>
           {open && hasDetail ? (
@@ -93,7 +77,7 @@ export function AuditEntryItem({ entry }: { entry: AuditLogEntry }) {
             <CaretRight
               size={16}
               aria-hidden
-              className={clsx('transition-transform', open && 'rotate-90')}
+              className={clsx('transition-transform rtl:-scale-x-100', open && 'rotate-90')}
             />
           </button>
         ) : null}

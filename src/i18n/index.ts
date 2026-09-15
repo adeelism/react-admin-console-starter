@@ -1,16 +1,15 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import en from './locales/en.json';
-import xx from './locales/xx.json';
+import { LOCALES, resolveInitialLocale } from './locales';
 
-// `xx` is a deliberately partial stub to prove the wiring; missing keys fall
-// back to English.
+// Resources are derived from the locale registry, so a new locale needs no edit here.
+const resources = Object.fromEntries(
+  Object.values(LOCALES).map((meta) => [meta.code, { translation: meta.resource }]),
+);
+
 void i18n.use(initReactI18next).init({
-  resources: {
-    en: { translation: en },
-    xx: { translation: xx },
-  },
-  lng: 'en',
+  resources,
+  lng: resolveInitialLocale(),
   fallbackLng: 'en',
   interpolation: { escapeValue: false },
 });

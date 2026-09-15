@@ -43,7 +43,7 @@ export function UsersFilters({
       <div className="relative max-w-xs grow">
         <MagnifyingGlass
           size={16}
-          className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-faint"
+          className="pointer-events-none absolute top-1/2 start-3 -translate-y-1/2 text-faint"
           aria-hidden
         />
         <input
@@ -52,7 +52,7 @@ export function UsersFilters({
           onChange={(event) => setTerm(event.target.value)}
           placeholder={t('users.searchPlaceholder')}
           aria-label={t('search.label')}
-          className="w-full rounded-md border border-border bg-bg py-2 pr-3 pl-9 text-sm text-text placeholder:text-faint focus-visible:outline-2 focus-visible:outline-accent"
+          className="w-full rounded-md border border-border bg-bg py-2 pe-3 ps-9 text-sm text-text placeholder:text-faint focus-visible:outline-2 focus-visible:outline-accent"
         />
       </div>
       <select
